@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/template.xhtml">
+
+    <ui:param name="title" value="Gestión de Productos" />
+
+    <ui:define name="content">
+        <h:form id="productoForm">
+            <p:card styleClass="border-round-lg shadow-1">
+                <f:facet name="title">
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <h:outputText value="Listado de Productos" styleClass="text-xl font-semibold" />
+                            <p:badge value="#{productoBean.productos.size()} registros" styleClass="ml-3" />
+                        </p:toolbarGroup>
+                        <p:toolbarGroup align="right">
+                            <p:inputText id="globalFilter" onkeyup="PF('productosTable').filter()" style="width: 15rem" placeholder="Buscar..."/>
+                            <p:commandButton value="Nuevo" icon="pi pi-plus" styleClass="ml-2 ui-button-raised"
+                                             actionListener="#{productoBean.openNew}"
+                                             update=":productoForm:manageProductContent"
+                                             oncomplete="PF('manageProductDialog').show()" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </f:facet>
+
+                <p:dataTable id="productosTable" widgetVar="productosTable" var="producto" value="#{productoBean.productos}"
+                             paginator="true" rows="10" rowKey="#{producto.id}" selectionMode="single"
+                             selection="#{productoBean.selectedProducto}"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,20" stripedRows="true" rowHover="true"
+                             emptyMessage="No se encontraron productos.">
+
+                    <p:column headerText="ID" sortBy="#{producto.id}" style="width:5rem; text-align:center">
+                        <h:outputText value="#{producto.id}" />
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{producto.nombre}" filterBy="#{producto.nombre}" filterMatchMode="contains">
+                        <h:outputText value="#{producto.nombre}" />
+                    </p:column>
+                    <p:column headerText="Descripción" filterBy="#{producto.descripcion}" filterMatchMode="contains">
+                        <h:outputText value="#{producto.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Precio" sortBy="#{producto.precio}" style="text-align:right; width: 8rem;">
+                        <h:outputText value="#{producto.precio}">
+                            <f:convertNumber type="currency" currencySymbol="S/ " locale="es-PE"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Acciones" style="width:7rem; text-align:center">
+                        <p:commandButton id="editBtn" icon="pi pi-pencil" styleClass="rounded-button ui-button-flat ui-button-secondary"
+                                         process="@this" oncomplete="PF('manageProductDialog').show()"
+                                         update=":productoForm:manageProductContent">
+                            <f:setPropertyActionListener value="#{producto}" target="#{productoBean.selectedProducto}" />
+                            <p:tooltip for="editBtn" value="Editar" position="bottom"/>
+                        </p:commandButton>
+                        <p:commandButton id="deleteBtn" icon="pi pi-trash" styleClass="rounded-button ui-button-flat ui-button-danger ml-2"
+                                         actionListener="#{productoBean.deleteProducto}" update=":productoForm:productosTable :messages">
+                            <f:setPropertyActionListener value="#{producto}" target="#{productoBean.selectedProducto}" />
+                            <p:confirm header="Confirmación" message="¿Eliminar el producto '#{producto.nombre}'?" icon="pi pi-exclamation-triangle"/>
+                            <p:tooltip for="deleteBtn" value="Eliminar" position="bottom"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="350">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat ui-button-secondary" icon="pi pi-times" />
+            </p:confirmDialog>
+
+            <p:dialog header="Detalles del Producto" widgetVar="manageProductDialog" modal="true"
+                      width="480" responsive="true" showEffect="fade" styleClass="border-round">
+                <p:outputPanel id="manageProductContent" class="ui-fluid">
+                    <p:panelGrid columns="1" styleClass="ui-panelgrid-blank dialog-form-grid" rendered="#{not empty productoBean.selectedProducto}">
+                        <p:outputLabel for="nombre" value="Nombre" />
+                        <p:inputText id="nombre" value="#{productoBean.selectedProducto.nombre}" required="true" />
+
+                        <p:outputLabel for="descripcion" value="Descripción" />
+                        <p:inputTextarea id="descripcion" value="#{productoBean.selectedProducto.descripcion}" rows="3" autoResize="false"/>
+
+                        <p:outputLabel for="precio" value="Precio" />
+                        <p:spinner id="precio" value="#{productoBean.selectedProducto.precio}" required="true"
+                                   min="0" stepFactor="0.5" prefix="S/ "/>
+                    </p:panelGrid>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Cancelar" icon="pi pi-times" styleClass="ui-button-secondary"
+                                     onclick="PF('manageProductDialog').hide()" type="button" />
+                    <p:commandButton value="Guardar" icon="pi pi-check" styleClass="ui-button-raised ml-2"
+                                     actionListener="#{productoBean.saveProducto}"
+                                     update=":productoForm:productosTable :messages"
+                                     process="manageProductContent @this" 
+                                     oncomplete="if (!args.validationFailed) PF('manageProductDialog').hide()"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/template.xhtml">
+
+    <ui:param name="title" value="Gestión de Usuarios" />
+
+    <ui:define name="content">
+        <h:form id="usuarioForm">
+            <p:card styleClass="border-round-lg shadow-1">
+                <f:facet name="title">
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <h:outputText value="Listado de Usuarios" styleClass="text-xl font-semibold" />
+                            <p:badge value="#{usuarioBean.usuarios.size()} registros" styleClass="ml-3" />
+                        </p:toolbarGroup>
+                        <p:toolbarGroup align="right">
+                            <p:inputText id="globalFilter" onkeyup="PF('usuariosTable').filter()" style="width: 15rem" placeholder="Buscar..."/>
+                            <p:commandButton value="Nuevo" icon="pi pi-plus" styleClass="ml-2 ui-button-raised"
+                                             actionListener="#{usuarioBean.openNew}"
+                                             update=":usuarioForm:manageUserContent"
+                                             oncomplete="PF('manageUserDialog').show()" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </f:facet>
+
+                <p:dataTable id="usuariosTable" widgetVar="usuariosTable" var="usuario" value="#{usuarioBean.usuarios}"
+                             paginator="true" rows="10" rowKey="#{usuario.id}" selectionMode="single"
+                             selection="#{usuarioBean.selectedUsuario}"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,20" stripedRows="true" rowHover="true"
+                             emptyMessage="No se encontraron usuarios.">
+
+                    <p:column headerText="ID" sortBy="#{usuario.id}" style="width:5rem; text-align:center">
+                        <h:outputText value="#{usuario.id}" />
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{usuario.nombre}" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                        <h:outputText value="#{usuario.nombre}" />
+                    </p:column>
+                    <p:column headerText="Email" filterBy="#{usuario.email}" filterMatchMode="contains">
+                        <h:outputText value="#{usuario.email}" />
+                    </p:column>
+                    <p:column headerText="Acciones" style="width:7rem; text-align:center">
+                        <p:commandButton id="editBtn" icon="pi pi-pencil" styleClass="rounded-button ui-button-flat ui-button-secondary"
+                                         process="@this" oncomplete="PF('manageUserDialog').show()"
+                                         update=":usuarioForm:manageUserContent">
+                            <f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.selectedUsuario}" />
+                            <p:tooltip for="editBtn" value="Editar" position="bottom"/>
+                        </p:commandButton>
+                        <p:commandButton id="deleteBtn" icon="pi pi-trash" styleClass="rounded-button ui-button-flat ui-button-danger ml-2"
+                                         actionListener="#{usuarioBean.deleteUsuario}" update=":usuarioForm:usuariosTable :messages">
+                            <f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.selectedUsuario}" />
+                            <p:confirm header="Confirmación" message="¿Eliminar el usuario '#{usuario.nombre}'?" icon="pi pi-exclamation-triangle"/>
+                            <p:tooltip for="deleteBtn" value="Eliminar" position="bottom"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="350">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat ui-button-secondary" icon="pi pi-times" />
+            </p:confirmDialog>
+
+            <p:dialog header="Detalles del Usuario" widgetVar="manageUserDialog" modal="true"
+                      width="480" responsive="true" showEffect="fade" styleClass="border-round">
+                <p:outputPanel id="manageUserContent" class="ui-fluid">
+                    <p:panelGrid columns="1" styleClass="ui-panelgrid-blank dialog-form-grid" rendered="#{not empty usuarioBean.selectedUsuario}">
+                        <p:outputLabel for="nombre" value="Nombre" />
+                        <p:inputText id="nombre" value="#{usuarioBean.selectedUsuario.nombre}" required="true" />
+
+                        <p:outputLabel for="email" value="Email" />
+                        <p:inputText id="email" value="#{usuarioBean.selectedUsuario.email}" required="true" />
+                        
+                        <p:outputLabel for="password" value="Contraseña" />
+                        <p:password id="password" value="#{usuarioBean.selectedUsuario.password}" required="#{empty usuarioBean.selectedUsuario.id}" 
+                                    feedback="false" />
+                    </p:panelGrid>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Cancelar" icon="pi pi-times" styleClass="ui-button-secondary"
+                                     onclick="PF('manageUserDialog').hide()" type="button" />
+                    <p:commandButton value="Guardar" icon="pi pi-check" styleClass="ui-button-raised ml-2"
+                                     actionListener="#{usuarioBean.saveUsuario}"
+                                     update=":usuarioForm:usuariosTable :messages"
+                                     process="manageUserContent @this" 
+                                     oncomplete="if (!args.validationFailed) PF('manageUserDialog').hide()"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

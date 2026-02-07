@@ -1,0 +1,178 @@
+/* Global Styles */
+body {
+    background-color: #f5f7fb;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+.layout-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.layout-sidebar {
+    width: 260px;
+    background-color: #343a40; /* Fondo oscuro para mayor contraste */
+    border-right: 1px solid #2b3035; /* Borde sutil */
+    color: #ffffff; /* Texto blanco por defecto */
+    padding: 0 !important; /* Quita padding que genera el borde negro alrededor */
+}
+.sidebar-header {
+    padding: 1.25rem 1.5rem !important; /* Header con padding controlado */
+    margin: 0 !important;
+    border-bottom: 1px solid #495057; /* Separador más visible */
+}
+.sidebar-header .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff; /* Logo blanco */
+}
+
+.layout-sidebar form.sidebar-form{
+  margin: 0 !important; /* El form no debe meter márgenes */
+}
+
+/* Estilos de los items individuales del menú - mantienen la compacidad */
+.layout-menu .ui-menuitem-link {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    color: #ced4da; /* Color de texto claro para ítems inactivos */
+    margin-bottom: 0.15rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+.layout-menu .ui-menuitem-link:hover {
+    background-color: #495057; /* Fondo más oscuro al pasar el mouse */
+    color: #ffffff; /* Texto blanco al pasar el mouse */
+}
+.layout-menu .ui-menuitem.active-menuitem > .ui-menuitem-link {
+    background-color: #0d6efd; /* Fondo azul para ítem activo */
+    color: #ffffff; /* Texto blanco para ítem activo */
+    font-weight: 600;
+}
+.layout-menu .ui-menuitem-link .ui-menuitem-icon {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    color: #ced4da; /* Color del icono para ítems inactivos */
+}
+.layout-menu .ui-menuitem.active-menuitem > .ui-menuitem-link .ui-menuitem-icon {
+    color: #ffffff; /* Icono blanco para ítem activo */
+}
+.layout-menu .ui-menuitem-text {
+    flex-grow: 1;
+}
+
+/* ===== SIDEBAR: quitar espacios y caja blanca del menu (Solución del amigo) ===== */
+
+/* 4) p:menu (la caja blanca) -> transparente y full width */
+.layout-sidebar .sidebar-menu.ui-menu{
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: .75rem 1rem !important; /* este es el “padding bueno” */
+  width: 100% !important;
+}
+
+/* 5) UL del menú sin padding/margen */
+.layout-sidebar .sidebar-menu .ui-menu-list{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 6) links ocupan todo el ancho */
+.layout-sidebar .sidebar-menu .ui-menuitem-link{
+  width: 100% !important;
+  border-radius: 10px;
+}
+
+/* 7) Evita que el LI tenga estilos raros del theme */
+.layout-sidebar .sidebar-menu .ui-menuitem{
+  background: transparent !important;
+  border: 0 !important;
+}
+
+
+/* Main Content */
+.layout-main {
+    flex: 1;
+}
+.layout-header {
+    padding: 0.75rem 2rem;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+}
+.layout-header .ui-breadcrumb {
+    padding: 0;
+    background: none;
+    border: 0;
+    font-size: 0.875rem;
+}
+.layout-header .user-profile {
+    border-left: 1px solid #e9ecef;
+    padding-left: 1.5rem;
+}
+
+.layout-content {
+    padding: 1.5rem 2rem;
+}
+
+/* DataTable */
+.ui-datatable .ui-datatable-thead > tr > th {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+}
+.ui-datatable .ui-datatable-thead > tr > th .ui-column-filter {
+    width: 100%;
+    max-width: 150px;
+}
+.ui-datatable .ui-datatable-tbody > tr {
+    border-bottom: 1px solid #e9ecef;
+}
+.ui-datatable.ui-datatable-hoverable-rows .ui-datatable-tbody > tr:not(.ui-state-highlight):hover {
+    background-color: #f1f3f5;
+}
+
+/* Toolbar */
+.ui-toolbar {
+    border: none;
+    background: none;
+    padding: 0 0 1rem 0;
+}
+
+/* Dialog */
+.ui-dialog {
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+.ui-dialog .ui-dialog-titlebar {
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    padding: 1.25rem;
+}
+.ui-dialog .ui-dialog-content {
+    padding: 1.5rem;
+}
+.ui-dialog .ui-dialog-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
+/* Forms in Dialog */
+.dialog-form-grid .ui-panelgrid-cell {
+    padding-bottom: 1.5rem;
+}
+.dialog-form-grid .ui-outputlabel {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}

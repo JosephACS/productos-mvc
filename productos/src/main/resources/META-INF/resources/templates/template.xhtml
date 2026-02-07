@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>#{title} | Admin Dashboard</title>
+    </f:facet>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <h:outputStylesheet library="primefaces" name="primeicons/primeicons.css" />
+    <h:outputStylesheet library="primefaces" name="theme.css" />
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css" />
+    <h:outputStylesheet library="css" name="custom.css" />
+</h:head>
+
+<h:body>
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <div class="layout-sidebar">
+            <div class="sidebar-header">
+                <a href="#{request.contextPath}/index.xhtml" class="flex align-items-center gap-2 text-900 no-underline">
+                    <p:graphicImage name="images/gemini.png" styleClass="w-2rem" />
+                    <span class="logo">Admin</span>
+                </a>
+            </div>
+            <h:form styleClass="sidebar-form">
+                <p:menu styleClass="layout-menu sidebar-menu" widgetVar="sidebarMenu">
+                    <p:menuitem value="Inicio" outcome="/index" icon="pi pi-home"
+                                styleClass="#{view.viewId.contains('index') ? 'active-menuitem' : ''}" />
+                    <p:menuitem value="Productos" outcome="/productos" icon="pi pi-box"
+                                styleClass="#{view.viewId.contains('productos') ? 'active-menuitem' : ''}" />
+                    <p:menuitem value="Usuarios" outcome="/usuarios" icon="pi pi-users"
+                                styleClass="#{view.viewId.contains('usuarios') ? 'active-menuitem' : ''}" />
+                </p:menu>
+            </h:form>
+        </div>
+        <!-- Main Content -->
+        <div class="layout-main">
+            <header class="layout-header flex align-items-center justify-content-between">
+                <p:breadCrumb>
+                    <p:menuitem value="Inicio" outcome="/index" />
+                    <p:menuitem value="#{title}" url="#" rendered="#{not empty title and title ne 'Inicio'}" />
+                </p:breadCrumb>
+
+                <div class="flex align-items-center gap-2 user-profile">
+                    <p:commandButton id="notifications" icon="pi pi-bell" styleClass="ui-button-flat ui-button-secondary ui-button-rounded" />
+                    <p:tooltip for="notifications" value="Notificaciones" position="bottom"/>
+                    
+                    <p:commandButton id="settings" icon="pi pi-cog" styleClass="ui-button-flat ui-button-secondary ui-button-rounded" />
+                    <p:tooltip for="settings" value="Ajustes" position="bottom"/>
+
+                    <p:avatar label="A" shape="circle" size="large" styleClass="ml-2" />
+                </div>
+            </header>
+
+            <main class="layout-content">
+                <p:growl id="messages" showDetail="true" life="4000"/>
+                <ui:insert name="content" />
+            </main>
+
+            <footer class="layout-footer text-center p-3 text-gray-500">
+                <h:outputText value="© #{java.time.Year.now().getValue()} - Gestión de Productos y Usuarios" />
+            </footer>
+        </div>
+    </div>
+</h:body>
+</html>
